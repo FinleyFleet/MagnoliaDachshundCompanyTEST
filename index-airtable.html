@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meadowlane Retrievers — Available Puppies (Airtable edition)</title>
+
+<!-- Content Security Policy: even if something slipped past the escaping,
+     this limits what the page is allowed to load or talk to. Images may
+     come from any https source; data may only be fetched from Airtable. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src https: data:; connect-src https://api.airtable.com; base-uri 'none'; form-action 'none'">
+
+<!-- ============================================================
+     AIRTABLE EDITION
+
+     Identical layout to the Google Sheets version — only the
+     data source differs. Content loads from an Airtable base,
+     where photos are drag-and-drop attachments instead of URLs.
+
+     To connect your base, fill in the CONFIG block in the script
+     section at the bottom. Until then, sample data is shown.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    --paper:   #FAF9F4;   /* soft warm white */
+    --ink:     #2E241D;   /* deep coffee brown */
+    --ink-soft:#6B5D50;
+    --meadow:  #4C7A4F;   /* backyard-grass green */
+    --meadow-dark:#39603C;
+    --biscuit: #E8B54B;   /* collar-tag yellow */
+    --card:    #FFFFFF;
+    --line:    #E5E0D3;
+    --radius:  14px;
+  }
+
+  *{ box-sizing:border-box; margin:0; padding:0; }
+
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Nunito Sans', system-ui, sans-serif;
+    line-height:1.55;
+  }
+
+  .wrap{ max-width:1060px; margin:0 auto; padding:0 20px; }
+
+  /* ---------- Header ---------- */
+  header{
+    border-bottom:1px solid var(--line);
+    padding:48px 0 36px;
+    background:
+      radial-gradient(circle at 85% 20%, rgba(232,181,75,.14), transparent 42%),
+      radial-gradient(circle at 8% 90%, rgba(76,122,79,.10), transparent 45%);
+  }
+  .kennel-name{
+    font-family:'Bricolage Grotesque', sans-serif;
+    font-weight:800;
+    font-size:clamp(2.1rem, 5.5vw, 3.4rem);
+    letter-spacing:-0.02em;
+    line-height:1.05;
+  }
+  .kennel-name span{ color:var(--meadow); }
+  .tagline{
+    margin-top:10px;
+    max-width:46ch;
+    color:var(--ink-soft);
+    font-size:1.05rem;
+  }
+
+  /* ---------- Data-source strip ---------- */
+  .source-strip{
+    display:flex; align-items:center; gap:10px;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+    font-size:.82rem; color:var(--ink-soft);
+  }
+  .source-dot{
+    width:9px; height:9px; border-radius:50%;
+    background:var(--biscuit); flex:none;
+  }
+  .source-strip.live .source-dot{ background:var(--meadow); }
+
+  /* ---------- Grid ---------- */
+  main{ padding:40px 0 70px; }
+  .section-label{
+    font-size:.78rem; font-weight:700; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--meadow-dark);
+    margin-bottom:22px;
+  }
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(255px, 1fr));
+    gap:26px;
+  }
+
+  /* ---------- Puppy card ---------- */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:visible;
+    position:relative;
+    box-shadow:0 1px 3px rgba(46,36,29,.06);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .card:hover{ transform:translateY(-3px); box-shadow:0 8px 20px rgba(46,36,29,.10); }
+
+  .photo{
+    height:210px;
+    border-radius:var(--radius) var(--radius) 0 0;
+    overflow:hidden;
+    background:linear-gradient(140deg, #EFEAD9, #E2DAC4);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .photo img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .photo .fallback{
+    font-family:'Bricolage Grotesque', sans-serif;
+    font-size:3rem; font-weight:800; color:#C9BFA5;
+  }
+
+  /* Signature element: hanging collar tag for status */
+  .tag{
+    position:absolute; top:186px; right:14px;
+    background:var(--biscuit); color:var(--ink);
+    font-size:.72rem; font-weight:700; letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:7px 13px 6px 22px;
+    border-radius:999px;
+    transform:rotate(-4deg);
+    box-shadow:0 2px 5px rgba(46,36,29,.22);
+  }
+  .tag::before{               /* the punched ring hole */
+    content:""; position:absolute; left:8px; top:50%;
+    transform:translateY(-50%);
+    width:7px; height:7px; border-radius:50%;
+    background:var(--card); box-shadow:inset 0 0 0 1.5px rgba(46,36,29,.35);
+  }
+  .tag.reserved{ background:#D9D2C0; color:var(--ink-soft); }
+  .tag.new{ background:var(--meadow); color:#fff; }
+
+  .card-body{ padding:20px 18px 22px; }
+  .pup-name{
+    font-family:'Bricolage Grotesque', sans-serif;
+    font-weight:600; font-size:1.35rem; letter-spacing:-0.01em;
+  }
+  .pup-meta{
+    font-size:.82rem; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--meadow-dark);
+    margin:4px 0 10px;
+  }
+  .pup-bio{ font-size:.95rem; color:var(--ink-soft); }
+
+  /* ---------- States ---------- */
+  .notice{
+    padding:60px 20px; text-align:center; color:var(--ink-soft);
+    border:1.5px dashed var(--line); border-radius:var(--radius);
+  }
+
+  footer{
+    border-top:1px solid var(--line);
+    padding:26px 0 40px;
+    font-size:.85rem; color:var(--ink-soft);
+  }
+  footer a{ color:var(--meadow-dark); }
+
+  @media (prefers-reduced-motion: reduce){
+    .card{ transition:none; }
+    .card:hover{ transform:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1 class="kennel-name">Meadowlane <span>Retrievers</span></h1>
+    <p class="tagline">Family-raised golden retrievers in the Mid-South. Every pup below is loaded live from our roster — check back often.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="sourceStrip" class="source-strip">
+    <span class="source-dot"></span>
+    <span id="sourceText">Showing built-in sample data — connect an Airtable base to go live.</span>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div class="section-label">Current Litter</div>
+    <div id="grid" class="grid" aria-live="polite"></div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    Questions about a pup? Email <a href="mailto:hello@example.com">hello@example.com</a>. Site content updates automatically from our roster.
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   CONFIG — Airtable connection
+   =====================================================================
+   1. In Airtable, create a base with a table named "Puppies" and these
+      fields:  Name | Breed | Age | Bio | Photo (Attachment) | Status
+   2. Create a Personal Access Token at airtable.com/create/tokens
+        Scope:  data.records:read   (READ ONLY — nothing else)
+        Access: ONLY this one base
+   3. Base ID starts with "app..." — it's the first segment of the URL
+      when the base is open:  airtable.com/appXXXXXXXXXXXXXX/...
+   4. Fill in all three values below, save, upload to GitHub once.
+
+   NOTE ON THE TOKEN: it is visible to anyone who views the page source.
+   That's acceptable ONLY because it is read-only and scoped to a single
+   base whose contents are public on this site anyway. Never reuse this
+   pattern with a token that can write, or with private data.
+===================================================================== */
+const AIRTABLE_TOKEN = "patvhWRHC0zSbUOnS.b02cc2a6adfe2436496eaaefca8151ea16a178441170438bb97a610ba65912a4
+";           // ← paste your read-only token here
+const BASE_ID        = "appZFNZqGehGaktKP
+";           // ← starts with "app"
+const TABLE_NAME     = "Puppies";    // ← must match your table's name
+const VIEW_NAME      = "Grid view";  // records appear in this view's order
+
+/* Sample data shown until Airtable is connected. */
+const SAMPLE_PUPS = [
+  { Name:"Biscuit", Breed:"Golden Retriever", Age:"9 weeks", Status:"Available",
+    Photo:"https://placedog.net/500/420?id=12",
+    Bio:"The bold one of the litter. First to the food bowl, first up the porch steps, first to fall asleep mid-zoomie." },
+  { Name:"Willow", Breed:"Golden Retriever", Age:"9 weeks", Status:"Reserved",
+    Photo:"https://placedog.net/500/420?id=25",
+    Bio:"Gentle and watchful. Prefers supervising her siblings' chaos from the shade with one ear up." },
+  { Name:"Tater", Breed:"Golden Retriever", Age:"9 weeks", Status:"Available",
+    Photo:"https://placedog.net/500/420?id=31",
+    Bio:"Built like a loaf of bread and twice as soft. Undefeated champion of tug-of-war (his siblings let him win)." },
+  { Name:"Juniper", Breed:"Golden Retriever", Age:"7 weeks", Status:"New",
+    Photo:"https://placedog.net/500/420?id=40",
+    Bio:"Newest addition to the roster. Curious about everything, especially shoelaces and the garden hose." }
+];
+
+/* ---------- Airtable fetch ----------
+   Returns all records (follows pagination just in case the roster
+   ever grows past Airtable's 100-records-per-request page size). */
+async function fetchAirtable(){
+  let records = [], offset = null;
+  do {
+    const params = new URLSearchParams({ view: VIEW_NAME });
+    if (offset) params.set("offset", offset);
+    const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?${params}`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` }
+    });
+    if (!res.ok) throw new Error("Airtable HTTP " + res.status);
+    const data = await res.json();
+    records = records.concat(data.records);
+    offset = data.offset || null;
+  } while (offset);
+
+  /* Flatten Airtable's { id, fields:{...} } shape into plain objects.
+     Attachment fields arrive as an array of file objects — we take
+     the first one and prefer its large thumbnail for faster loading. */
+  return records.map(r => {
+    const f = r.fields || {};
+    const att = Array.isArray(f.Photo) && f.Photo.length ? f.Photo[0] : null;
+    return {
+      Name:   f.Name   || "",
+      Breed:  f.Breed  || "",
+      Age:    f.Age    || "",
+      Bio:    f.Bio    || "",
+      Status: f.Status || "Available",
+      Photo:  att ? (att.thumbnails?.large?.url || att.url) : ""
+    };
+  }).filter(p => p.Name);   // skip blank rows
+}
+
+/* ---------- tampering prevention ----------
+   Everything from the base is untrusted input. esc() converts it to
+   plain text before it touches the page, so a bio like
+   a malicious bio full of script tags renders as harmless visible text instead
+   of running. safeURL() only allows real web links in image tags. */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => (
+    { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]
+  ));
+}
+function safeURL(u){
+  return /^https?:\/\//i.test(u) ? u : "";
+}
+
+/* ---------- render (identical to the Sheets version) ---------- */
+function render(pups){
+  const grid = document.getElementById("grid");
+  grid.innerHTML = "";
+
+  if (!pups.length){
+    grid.innerHTML = `<div class="notice" style="grid-column:1/-1">
+      No puppies on the roster right now — check back soon!</div>`;
+    return;
+  }
+
+  for (const p of pups){
+    const card = document.createElement("article");
+    card.className = "card";
+
+    const photo   = safeURL(p.Photo);
+    const initial = esc((p.Name || "?")[0]);
+    const statusClass = p.Status.toLowerCase() === "reserved" ? "reserved"
+                      : p.Status.toLowerCase() === "new"      ? "new" : "";
+
+    card.innerHTML = `
+      <div class="photo">
+        ${photo
+          ? `<img src="${esc(photo)}" alt="Photo of ${esc(p.Name)}">`
+          : `<div class="fallback">${initial}</div>`}
+      </div>
+      <span class="tag ${statusClass}">${esc(p.Status)}</span>
+      <div class="card-body">
+        <h2 class="pup-name">${esc(p.Name)}</h2>
+        <div class="pup-meta">${esc([p.Breed, p.Age].filter(Boolean).join(" · "))}</div>
+        <p class="pup-bio">${esc(p.Bio)}</p>
+      </div>`;
+
+    /* If a photo link is broken, swap in the initial-letter placeholder */
+    const img = card.querySelector("img");
+    if (img) img.addEventListener("error", () => {
+      img.closest(".photo").innerHTML = `<div class="fallback">${initial}</div>`;
+    });
+
+    grid.appendChild(card);
+  }
+}
+
+/* ---------- load ---------- */
+async function load(){
+  const strip = document.getElementById("sourceStrip");
+  const text  = document.getElementById("sourceText");
+
+  if (!AIRTABLE_TOKEN || !BASE_ID){
+    render(SAMPLE_PUPS);
+    return;
+  }
+
+  try{
+    const pups = await fetchAirtable();
+    render(pups);
+    strip.classList.add("live");
+    text.textContent = `Live from Airtable — ${pups.length} pup${pups.length === 1 ? "" : "s"} listed. Updated ${new Date().toLocaleDateString()}.`;
+  } catch(err){
+    console.error("Airtable load failed:", err);
+    render(SAMPLE_PUPS);
+    text.textContent = "Couldn't reach Airtable (check token, Base ID & table name) — showing sample data.";
+  }
+}
+
+load();
+</script>
+</body>
+</html>
