@@ -3,359 +3,363 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meadowlane Retrievers — Available Puppies (Airtable edition)</title>
-
-<!-- Note: Content-Security-Policy removed — the meta tag version can
-     interfere with GitHub Pages headers. Security is maintained via
-     HTML escaping (esc/safeURL functions) and the read-only token scope. -->
-
-<!-- ============================================================
-     AIRTABLE EDITION
-
-     Identical layout to the Google Sheets version — only the
-     data source differs. Content loads from an Airtable base,
-     where photos are drag-and-drop attachments instead of URLs.
-
-     To connect your base, fill in the CONFIG block in the script
-     section at the bottom. Until then, sample data is shown.
-     ============================================================ -->
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-
+<title>Magnolia Dachshund Co. — Tori Sowell</title>
+<link rel="stylesheet" href="style.css">
 <style>
-  :root{
-    --paper:   #FAF9F4;   /* soft warm white */
-    --ink:     #2E241D;   /* deep coffee brown */
-    --ink-soft:#6B5D50;
-    --meadow:  #4C7A4F;   /* backyard-grass green */
-    --meadow-dark:#39603C;
-    --biscuit: #E8B54B;   /* collar-tag yellow */
-    --card:    #FFFFFF;
-    --line:    #E5E0D3;
-    --radius:  14px;
-  }
 
-  *{ box-sizing:border-box; margin:0; padding:0; }
+/* ---- Hero ---- */
+.hero {
+  padding: 80px 0 72px;
+  background:
+    radial-gradient(ellipse at 92% 10%, rgba(212,147,122,.18), transparent 50%),
+    radial-gradient(ellipse at 5% 95%,  rgba(122,158,126,.12), transparent 48%);
+  border-bottom: 1px solid var(--line);
+}
+.hero-inner {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 64px;
+  align-items: center;
+}
+.hero-kicker {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .78rem; font-weight: 500; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--ink-soft);
+  margin-bottom: 22px;
+}
+.hero-kicker::before {
+  content: ""; display: block;
+  width: 28px; height: 1.5px; background: var(--gold);
+}
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2.4rem, 5.5vw, 3.8rem);
+  font-weight: 600;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--blush);
+}
+.hero-sub {
+  margin-top: 20px;
+  max-width: 44ch;
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+  line-height: 1.65;
+}
+.hero-cta {
+  margin-top: 36px;
+  display: inline-block;
+  background: var(--blush);
+  color: var(--white);
+  font-size: .85rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 14px 30px;
+  border-radius: 999px;
+  transition: background .18s, transform .15s;
+}
+.hero-cta:hover { background: var(--sage); transform: translateY(-2px); }
 
-  body{
-    background:var(--paper);
-    color:var(--ink);
-    font-family:'Nunito Sans', system-ui, sans-serif;
-    line-height:1.55;
-  }
+/* Signature element: the portrait frame with magnolia-petal border */
+.portrait-frame {
+  position: relative;
+}
+.portrait-frame::before {
+  content: "";
+  position: absolute;
+  inset: -14px -14px -14px 14px;
+  border: 2px solid var(--blush-light);
+  border-radius: var(--radius);
+  z-index: 0;
+}
+.portrait-frame::after {
+  content: "✦";
+  position: absolute;
+  bottom: -28px; right: 18px;
+  font-size: 1.4rem;
+  color: var(--gold);
+  z-index: 2;
+}
+.portrait {
+  position: relative; z-index: 1;
+  width: 100%; aspect-ratio: 4/5;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: linear-gradient(145deg, var(--blush-light), var(--bloom));
+  box-shadow: 0 12px 40px rgba(44,30,20,.12);
+}
+.portrait img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.portrait .portrait-placeholder {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  color: var(--blush);
+}
+.portrait-placeholder .icon {
+  font-size: 3.5rem; line-height: 1;
+}
+.portrait-placeholder p {
+  font-size: .82rem; color: var(--ink-soft); text-align: center;
+  max-width: 18ch; line-height: 1.5;
+}
 
-  .wrap{ max-width:1060px; margin:0 auto; padding:0 20px; }
+/* ---- Story section ---- */
+.story { padding: 80px 0; }
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+.story-text p {
+  color: var(--ink-soft);
+  font-size: 1rem;
+  line-height: 1.75;
+  margin-bottom: 18px;
+  font-weight: 300;
+}
+.story-text p:last-child { margin-bottom: 0; }
 
-  /* ---------- Header ---------- */
-  header{
-    border-bottom:1px solid var(--line);
-    padding:48px 0 36px;
-    background:
-      radial-gradient(circle at 85% 20%, rgba(232,181,75,.14), transparent 42%),
-      radial-gradient(circle at 8% 90%, rgba(76,122,79,.10), transparent 45%);
-  }
-  .kennel-name{
-    font-family:'Bricolage Grotesque', sans-serif;
-    font-weight:800;
-    font-size:clamp(2.1rem, 5.5vw, 3.4rem);
-    letter-spacing:-0.02em;
-    line-height:1.05;
-  }
-  .kennel-name span{ color:var(--meadow); }
-  .tagline{
-    margin-top:10px;
-    max-width:46ch;
-    color:var(--ink-soft);
-    font-size:1.05rem;
-  }
+/* Pull quote */
+.pull-quote {
+  border-left: 3px solid var(--gold);
+  padding: 6px 0 6px 22px;
+  margin: 28px 0;
+}
+.pull-quote p {
+  font-family: var(--display);
+  font-size: 1.25rem;
+  font-style: italic;
+  color: var(--ink) !important;
+  line-height: 1.5 !important;
+  margin: 0 !important;
+}
 
-  /* ---------- Data-source strip ---------- */
-  .source-strip{
-    display:flex; align-items:center; gap:10px;
-    padding:10px 0;
-    border-bottom:1px solid var(--line);
-    font-size:.82rem; color:var(--ink-soft);
-  }
-  .source-dot{
-    width:9px; height:9px; border-radius:50%;
-    background:var(--biscuit); flex:none;
-  }
-  .source-strip.live .source-dot{ background:var(--meadow); }
+/* Farm facts sidebar */
+.farm-facts {
+  background: var(--bloom);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 32px;
+}
+.farm-facts h3 {
+  font-family: var(--display);
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+}
+.fact-list { list-style: none; }
+.fact-list li {
+  display: flex; gap: 12px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: .92rem;
+}
+.fact-list li:last-child { border-bottom: none; }
+.fact-icon { font-size: 1.1rem; flex: none; margin-top: 1px; }
+.fact-label { font-weight: 500; color: var(--ink); }
+.fact-value { color: var(--ink-soft); font-size: .87rem; margin-top: 1px; }
 
-  /* ---------- Grid ---------- */
-  main{ padding:40px 0 70px; }
-  .section-label{
-    font-size:.78rem; font-weight:700; letter-spacing:.14em;
-    text-transform:uppercase; color:var(--meadow-dark);
-    margin-bottom:22px;
-  }
-  .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fill, minmax(255px, 1fr));
-    gap:26px;
-  }
+/* ---- Contact section ---- */
+.contact {
+  background: var(--bloom);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 72px 0;
+}
+.contact-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: start;
+}
+.contact-links { display: flex; flex-direction: column; gap: 14px; margin-top: 8px; }
+.contact-link {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 20px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: .92rem;
+  transition: border-color .18s, transform .15s;
+}
+.contact-link:hover { border-color: var(--blush); transform: translateX(4px); }
+.contact-icon { font-size: 1.2rem; flex: none; }
+.contact-label { font-weight: 500; }
+.contact-sub { font-size: .82rem; color: var(--ink-soft); }
 
-  /* ---------- Puppy card ---------- */
-  .card{
-    background:var(--card);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    overflow:visible;
-    position:relative;
-    box-shadow:0 1px 3px rgba(46,36,29,.06);
-    transition:transform .18s ease, box-shadow .18s ease;
-  }
-  .card:hover{ transform:translateY(-3px); box-shadow:0 8px 20px rgba(46,36,29,.10); }
+/* Social row */
+.social-row {
+  display: flex; gap: 12px; margin-top: 28px; flex-wrap: wrap;
+}
+.social-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 18px;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  font-size: .82rem; font-weight: 500;
+  transition: border-color .18s, color .18s;
+}
+.social-pill:hover { border-color: var(--blush); color: var(--blush); }
 
-  .photo{
-    height:210px;
-    border-radius:var(--radius) var(--radius) 0 0;
-    overflow:hidden;
-    background:linear-gradient(140deg, #EFEAD9, #E2DAC4);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .photo img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .photo .fallback{
-    font-family:'Bricolage Grotesque', sans-serif;
-    font-size:3rem; font-weight:800; color:#C9BFA5;
-  }
-
-  /* Signature element: hanging collar tag for status */
-  .tag{
-    position:absolute; top:186px; right:14px;
-    background:var(--biscuit); color:var(--ink);
-    font-size:.72rem; font-weight:700; letter-spacing:.05em;
-    text-transform:uppercase;
-    padding:7px 13px 6px 22px;
-    border-radius:999px;
-    transform:rotate(-4deg);
-    box-shadow:0 2px 5px rgba(46,36,29,.22);
-  }
-  .tag::before{               /* the punched ring hole */
-    content:""; position:absolute; left:8px; top:50%;
-    transform:translateY(-50%);
-    width:7px; height:7px; border-radius:50%;
-    background:var(--card); box-shadow:inset 0 0 0 1.5px rgba(46,36,29,.35);
-  }
-  .tag.reserved{ background:#D9D2C0; color:var(--ink-soft); }
-  .tag.new{ background:var(--meadow); color:#fff; }
-
-  .card-body{ padding:20px 18px 22px; }
-  .pup-name{
-    font-family:'Bricolage Grotesque', sans-serif;
-    font-weight:600; font-size:1.35rem; letter-spacing:-0.01em;
-  }
-  .pup-meta{
-    font-size:.82rem; font-weight:700; letter-spacing:.06em;
-    text-transform:uppercase; color:var(--meadow-dark);
-    margin:4px 0 10px;
-  }
-  .pup-bio{ font-size:.95rem; color:var(--ink-soft); }
-
-  /* ---------- States ---------- */
-  .notice{
-    padding:60px 20px; text-align:center; color:var(--ink-soft);
-    border:1.5px dashed var(--line); border-radius:var(--radius);
-  }
-
-  footer{
-    border-top:1px solid var(--line);
-    padding:26px 0 40px;
-    font-size:.85rem; color:var(--ink-soft);
-  }
-  footer a{ color:var(--meadow-dark); }
-
-  @media (prefers-reduced-motion: reduce){
-    .card{ transition:none; }
-    .card:hover{ transform:none; }
-  }
+/* ---- Responsive ---- */
+@media (max-width: 820px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+  .portrait-frame { max-width: 340px; margin: 0 auto; }
+  .story-grid { grid-template-columns: 1fr; gap: 40px; }
+  .contact-inner { grid-template-columns: 1fr; gap: 40px; }
+}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="wrap">
-    <h1 class="kennel-name">Meadowlane <span>Retrievers</span></h1>
-    <p class="tagline">Family-raised golden retrievers in the Mid-South. Every pup below is loaded live from our roster — check back often.</p>
+<nav>
+  <div class="wrap nav-inner">
+    <span class="nav-logo">Magnolia <span>Dachshund Co.</span></span>
+    <div class="nav-links">
+      <a href="index.html" class="active">About</a>
+      <a href="dogs.html">Our Dogs</a>
+    </div>
   </div>
-</header>
+</nav>
 
-<div class="wrap">
-  <div id="sourceStrip" class="source-strip">
-    <span class="source-dot"></span>
-    <span id="sourceText">Showing built-in sample data — connect an Airtable base to go live.</span>
-  </div>
-</div>
+<!-- ======== HERO ======== -->
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="hero-text">
+      <div class="hero-kicker">Est. on the farm, raised with love</div>
+      <h1>Where every dachshund finds their <em>forever home.</em></h1>
+      <p class="hero-sub">Tucked away on a quiet Mississippi farm, Tori Sowell raises long-haired dachshunds the right way — unhurried, with muddy boots and a whole lot of heart.</p>
+      <a href="dogs.html" class="hero-cta">Meet the Dogs</a>
+    </div>
 
-<main>
-  <div class="wrap">
-    <div class="section-label">Current Litter</div>
-    <div id="grid" class="grid" aria-live="polite"></div>
+    <div class="portrait-frame">
+      <div class="portrait">
+        <!--
+          TO ADD TORI'S PHOTO:
+          Replace the placeholder div below with:
+          <img src="tori.jpg" alt="Tori Sowell">
+          and upload tori.jpg to the same GitHub folder.
+        -->
+        <div class="portrait-placeholder">
+          <div class="icon">🌸</div>
+          <p>Tori's photo goes here</p>
+        </div>
+      </div>
+    </div>
   </div>
-</main>
+</section>
+
+<!-- ======== STORY ======== -->
+<section class="story">
+  <div class="wrap story-grid">
+    <div class="story-text">
+      <div class="eyebrow">Our Story</div>
+      <h2 class="section-title">A little farm, a lot of love.</h2>
+      <div class="divider"></div>
+
+      <p>Magnolia Dachshund Co. started the way most good things do — with one dog who stole Tori's heart and never gave it back. What began as a single litter in the farmhouse living room has grown into something Tori is genuinely proud of: a small, intentional operation where every dog is handled daily, socialized with children and other animals, and sent home healthy, happy, and ready to be a true companion.</p>
+
+      <div class="pull-quote">
+        <p>"I don't breed for volume. I breed for the family that's going to love this dog for the next fifteen years."</p>
+      </div>
+
+      <p>Tori lives and works on her family's Mississippi farm, where the long-haired dachshunds roam the yard alongside the rest of life on the land. It's not a kennel — it's a home, and that difference shows in every dog she raises.</p>
+
+      <p>Each litter is planned carefully, with health and temperament in mind. When you're ready, reach out — Tori will walk you through what's available and find the right fit.</p>
+    </div>
+
+    <aside class="farm-facts">
+      <h3>About the Farm</h3>
+      <ul class="fact-list">
+        <li>
+          <span class="fact-icon">📍</span>
+          <div>
+            <div class="fact-label">Location</div>
+            <div class="fact-value">Mississippi — update with city/county</div>
+          </div>
+        </li>
+        <li>
+          <span class="fact-icon">🐾</span>
+          <div>
+            <div class="fact-label">Breed</div>
+            <div class="fact-value">Long-Haired Dachshunds</div>
+          </div>
+        </li>
+        <li>
+          <span class="fact-icon">🏡</span>
+          <div>
+            <div class="fact-label">Setting</div>
+            <div class="fact-value">Family farm — home-raised, not a kennel</div>
+          </div>
+        </li>
+        <li>
+          <span class="fact-icon">✅</span>
+          <div>
+            <div class="fact-label">Health</div>
+            <div class="fact-value">Vet checked, first shots included</div>
+          </div>
+        </li>
+
+      </ul>
+    </aside>
+  </div>
+</section>
+
+<!-- ======== CONTACT ======== -->
+<section class="contact">
+  <div class="wrap contact-inner">
+    <div>
+      <div class="eyebrow">Get in Touch</div>
+      <h2 class="section-title">Interested in a pup?</h2>
+      <div class="divider"></div>
+      <p style="color:var(--ink-soft); font-weight:300; line-height:1.75; max-width:38ch;">
+        See a dog you like? Reach out directly — Tori responds personally and can tell you what's available.
+      </p>
+
+      <div class="social-row">
+        <a href="#" class="social-pill">📘 Facebook</a>
+        <a href="#" class="social-pill">📷 Instagram</a>
+        <a href="dogs.html" class="social-pill">🐾 Our Dogs</a>
+      </div>
+    </div>
+
+    <div class="contact-links">
+      <a href="tel:+10000000000" class="contact-link">
+        <span class="contact-icon">📞</span>
+        <div>
+          <div class="contact-label">Call or Text</div>
+          <div class="contact-sub">(000) 000-0000 — update with real number</div>
+        </div>
+      </a>
+      <a href="mailto:hello@example.com" class="contact-link">
+        <span class="contact-icon">✉️</span>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-sub">hello@example.com — update with real email</div>
+        </div>
+      </a>
+      <a href="dogs.html" class="contact-link">
+        <span class="contact-icon">🐶</span>
+        <div>
+          <div class="contact-label">See Available Dogs</div>
+          <div class="contact-sub">Updated live from our roster</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
 
 <footer>
   <div class="wrap">
-    Questions about a pup? Email <a href="mailto:hello@example.com">hello@example.com</a>. Site content updates automatically from our roster.
+    <p>© 2026 Magnolia Dachshund Co. · Tori Sowell · Mississippi</p>
+    <p style="margin-top:6px;">Website by <a href="https://finleyfleet.github.io" target="_blank">Finley Fleet</a></p>
   </div>
 </footer>
 
-<script>
-/* =====================================================================
-   CONFIG — Airtable connection
-   =====================================================================
-   1. In Airtable, create a base with a table named "Puppies" and these
-      fields:  Name | Breed | Age | Bio | Photo (Attachment) | Status
-   2. Create a Personal Access Token at airtable.com/create/tokens
-        Scope:  data.records:read   (READ ONLY — nothing else)
-        Access: ONLY this one base
-   3. Base ID starts with "app..." — it's the first segment of the URL
-      when the base is open:  airtable.com/appXXXXXXXXXXXXXX/...
-   4. Fill in all three values below, save, upload to GitHub once.
-
-   NOTE ON THE TOKEN: it is visible to anyone who views the page source.
-   That's acceptable ONLY because it is read-only and scoped to a single
-   base whose contents are public on this site anyway. Never reuse this
-   pattern with a token that can write, or with private data.
-===================================================================== */
-const AIRTABLE_TOKEN = "patquPkYnuoYSqTiT.0a40386595cc413f1c8b1b6eafc2363f1695ca2e8a225fcb39c5ae5140cecb9c";
-const BASE_ID        = "appZFNZqGehGaktKP";
-const TABLE_NAME     = "Puppies";    // ← must match your table's name
-const VIEW_NAME      = "Grid view";  // records appear in this view's order
-
-/* Sample data shown until Airtable is connected. */
-const SAMPLE_PUPS = [
-  { Name:"Biscuit", Breed:"Golden Retriever", Age:"9 weeks", Status:"Available",
-    Photo:"https://placedog.net/500/420?id=12",
-    Bio:"The bold one of the litter. First to the food bowl, first up the porch steps, first to fall asleep mid-zoomie." },
-  { Name:"Willow", Breed:"Golden Retriever", Age:"9 weeks", Status:"Reserved",
-    Photo:"https://placedog.net/500/420?id=25",
-    Bio:"Gentle and watchful. Prefers supervising her siblings' chaos from the shade with one ear up." },
-  { Name:"Tater", Breed:"Golden Retriever", Age:"9 weeks", Status:"Available",
-    Photo:"https://placedog.net/500/420?id=31",
-    Bio:"Built like a loaf of bread and twice as soft. Undefeated champion of tug-of-war (his siblings let him win)." },
-  { Name:"Juniper", Breed:"Golden Retriever", Age:"7 weeks", Status:"New",
-    Photo:"https://placedog.net/500/420?id=40",
-    Bio:"Newest addition to the roster. Curious about everything, especially shoelaces and the garden hose." }
-];
-
-/* ---------- Airtable fetch ----------
-   Returns all records (follows pagination just in case the roster
-   ever grows past Airtable's 100-records-per-request page size). */
-async function fetchAirtable(){
-  let records = [], offset = null;
-  do {
-    const params = new URLSearchParams({ view: VIEW_NAME });
-    if (offset) params.set("offset", offset);
-    const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?${params}`;
-    const res = await fetch(url, {
-      headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` }
-    });
-    if (!res.ok) throw new Error("Airtable HTTP " + res.status);
-    const data = await res.json();
-    records = records.concat(data.records);
-    offset = data.offset || null;
-  } while (offset);
-
-  /* Flatten Airtable's { id, fields:{...} } shape into plain objects.
-     Attachment fields arrive as an array of file objects — we take
-     the first one and prefer its large thumbnail for faster loading. */
-  return records.map(r => {
-    const f = r.fields || {};
-    const att = Array.isArray(f.Photo) && f.Photo.length ? f.Photo[0] : null;
-    return {
-      Name:   f.Name   || "",
-      Breed:  f.Breed  || "",
-      Age:    f.Age    || "",
-      Bio:    f.Bio    || "",
-      Status: f.Status || "Available",
-      Photo:  att ? (att.thumbnails?.large?.url || att.url) : ""
-    };
-  }).filter(p => p.Name);   // skip blank rows
-}
-
-/* ---------- tampering prevention ----------
-   Everything from the base is untrusted input. esc() converts it to
-   plain text before it touches the page, so a bio like
-   a malicious bio full of script tags renders as harmless visible text instead
-   of running. safeURL() only allows real web links in image tags. */
-function esc(s){
-  return String(s).replace(/[&<>"']/g, c => (
-    { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]
-  ));
-}
-function safeURL(u){
-  return /^https?:\/\//i.test(u) ? u : "";
-}
-
-/* ---------- render (identical to the Sheets version) ---------- */
-function render(pups){
-  const grid = document.getElementById("grid");
-  grid.innerHTML = "";
-
-  if (!pups.length){
-    grid.innerHTML = `<div class="notice" style="grid-column:1/-1">
-      No puppies on the roster right now — check back soon!</div>`;
-    return;
-  }
-
-  for (const p of pups){
-    const card = document.createElement("article");
-    card.className = "card";
-
-    const photo   = safeURL(p.Photo);
-    const initial = esc((p.Name || "?")[0]);
-    const statusClass = p.Status.toLowerCase() === "reserved" ? "reserved"
-                      : p.Status.toLowerCase() === "new"      ? "new" : "";
-
-    card.innerHTML = `
-      <div class="photo">
-        ${photo
-          ? `<img src="${esc(photo)}" alt="Photo of ${esc(p.Name)}">`
-          : `<div class="fallback">${initial}</div>`}
-      </div>
-      <span class="tag ${statusClass}">${esc(p.Status)}</span>
-      <div class="card-body">
-        <h2 class="pup-name">${esc(p.Name)}</h2>
-        <div class="pup-meta">${esc([p.Breed, p.Age].filter(Boolean).join(" · "))}</div>
-        <p class="pup-bio">${esc(p.Bio)}</p>
-      </div>`;
-
-    /* If a photo link is broken, swap in the initial-letter placeholder */
-    const img = card.querySelector("img");
-    if (img) img.addEventListener("error", () => {
-      img.closest(".photo").innerHTML = `<div class="fallback">${initial}</div>`;
-    });
-
-    grid.appendChild(card);
-  }
-}
-
-/* ---------- load ---------- */
-async function load(){
-  const strip = document.getElementById("sourceStrip");
-  const text  = document.getElementById("sourceText");
-
-  if (!AIRTABLE_TOKEN || !BASE_ID){
-    render(SAMPLE_PUPS);
-    return;
-  }
-
-  try{
-    const pups = await fetchAirtable();
-    render(pups);
-    strip.classList.add("live");
-    text.textContent = `Live from Airtable — ${pups.length} pup${pups.length === 1 ? "" : "s"} listed. Updated ${new Date().toLocaleDateString()}.`;
-  } catch(err){
-    console.error("Airtable load failed:", err);
-    render(SAMPLE_PUPS);
-    text.textContent = `Airtable error: ${err.message} — showing sample data instead.`;
-  }
-}
-
-load();
-</script>
 </body>
 </html>
