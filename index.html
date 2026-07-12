@@ -220,10 +220,26 @@
    base whose contents are public on this site anyway. Never reuse this
    pattern with a token that can write, or with private data.
 ===================================================================== */
-const AIRTABLE_TOKEN = "patvhWRHC0zSbUOnS.b02cc2a6adfe2436496eaaefca8151ea16a178441170438bb97a610ba65912a4";           // ← paste your read-only token here
-const BASE_ID        = "appZFNZqGehGaktKP";           // ← starts with "app"
+const AIRTABLE_TOKEN = "patquPkYnuoYSqTiT.0a40386595cc413f1c8b1b6eafc2363f1695ca2e8a225fcb39c5ae5140cecb9c";
+const BASE_ID        = "appZFNZqGehGaktKP";
 const TABLE_NAME     = "Puppies";    // ← must match your table's name
 const VIEW_NAME      = "Grid view";  // records appear in this view's order
+
+/* Sample data shown until Airtable is connected. */
+const SAMPLE_PUPS = [
+  { Name:"Biscuit", Breed:"Golden Retriever", Age:"9 weeks", Status:"Available",
+    Photo:"https://placedog.net/500/420?id=12",
+    Bio:"The bold one of the litter. First to the food bowl, first up the porch steps, first to fall asleep mid-zoomie." },
+  { Name:"Willow", Breed:"Golden Retriever", Age:"9 weeks", Status:"Reserved",
+    Photo:"https://placedog.net/500/420?id=25",
+    Bio:"Gentle and watchful. Prefers supervising her siblings' chaos from the shade with one ear up." },
+  { Name:"Tater", Breed:"Golden Retriever", Age:"9 weeks", Status:"Available",
+    Photo:"https://placedog.net/500/420?id=31",
+    Bio:"Built like a loaf of bread and twice as soft. Undefeated champion of tug-of-war (his siblings let him win)." },
+  { Name:"Juniper", Breed:"Golden Retriever", Age:"7 weeks", Status:"New",
+    Photo:"https://placedog.net/500/420?id=40",
+    Bio:"Newest addition to the roster. Curious about everything, especially shoelaces and the garden hose." }
+];
 
 /* ---------- Airtable fetch ----------
    Returns all records (follows pagination just in case the roster
