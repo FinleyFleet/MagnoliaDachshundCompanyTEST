@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reviews — Magnolia Dachshund Co.</title>
+<link rel="stylesheet" href="style.css">
+<style>
+
+/* ---- Page hero ---- */
+.page-hero {
+  padding: 60px 0 50px;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 90% 0%,  rgba(196,150,58,.15), transparent 48%),
+    radial-gradient(ellipse at 4% 100%, rgba(212,147,122,.10), transparent 48%);
+}
+.page-hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.page-hero h1 em { font-style: italic; color: var(--gold); }
+.page-hero p {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-weight: 300;
+  font-size: 1rem;
+  max-width: 50ch;
+  line-height: 1.7;
+}
+
+/* ---- Platform rating badges ---- */
+.platform-strip {
+  padding: 36px 0;
+  border-bottom: 1px solid var(--line);
+  background: var(--bloom);
+}
+.platform-row {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  align-items: stretch;
+}
+.platform-badge {
+  flex: 1; min-width: 200px;
+  display: flex; align-items: center; gap: 16px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  transition: border-color .18s, transform .15s;
+  text-decoration: none;
+}
+.platform-badge:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.platform-icon { font-size: 1.8rem; flex: none; }
+.platform-info { flex: 1; }
+.platform-name {
+  font-size: .72rem; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.platform-rating {
+  font-family: var(--display);
+  font-size: 1.4rem; font-weight: 600;
+  color: var(--ink);
+  line-height: 1.1;
+  margin: 2px 0;
+}
+.platform-stars { color: var(--gold); font-size: .85rem; letter-spacing: 1px; }
+.platform-count { font-size: .75rem; color: var(--ink-soft); margin-top: 2px; }
+.platform-arrow {
+  font-size: 1rem; color: var(--line);
+  flex: none;
+}
+.platform-badge:hover .platform-arrow { color: var(--gold); }
+
+/* ---- Reviews grid ---- */
+main { padding: 56px 0 80px; }
+.reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 22px;
+}
+
+/* ---- Review card ---- */
+.review-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 28px 26px 24px;
+  display: flex; flex-direction: column;
+  box-shadow: 0 1px 4px rgba(44,30,20,.04);
+  transition: transform .18s, box-shadow .18s;
+  position: relative;
+}
+.review-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(44,30,20,.09);
+}
+
+/* Signature element: large open-quote mark watermark */
+.review-card::before {
+  content: "\201C";
+  position: absolute;
+  top: 12px; right: 20px;
+  font-family: var(--display);
+  font-size: 5rem;
+  line-height: 1;
+  color: var(--blush-light);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.card-stars {
+  color: var(--gold);
+  font-size: .9rem;
+  letter-spacing: 2px;
+  margin-bottom: 14px;
+  position: relative; z-index: 1;
+}
+.card-quote {
+  font-family: var(--display);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--ink);
+  line-height: 1.65;
+  flex: 1;
+  position: relative; z-index: 1;
+}
+.card-footer {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  position: relative; z-index: 1;
+}
+.card-author { font-size: .8rem; font-weight: 600; color: var(--ink); }
+.card-location { font-size: .75rem; color: var(--ink-soft); margin-top: 2px; }
+.card-source {
+  font-size: .72rem; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
+.card-source.google { border-color: #DADCE0; color: #4285F4; }
+.card-source.yelp   { border-color: #FFCFC9; color: #D32323; }
+.card-source.fb     { border-color: #D0D9E8; color: #1877F2; }
+
+/* ---- CTA strip ---- */
+.cta-strip {
+  background: var(--bloom);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 48px 0;
+}
+.cta-inner {
+  display: flex; align-items: center;
+  justify-content: space-between; gap: 24px;
+  flex-wrap: wrap;
+}
+.cta-text h3 {
+  font-family: var(--display);
+  font-size: 1.3rem; font-weight: 600;
+}
+.cta-text p {
+  margin-top: 6px;
+  font-size: .92rem; color: var(--ink-soft);
+  font-weight: 300;
+}
+.cta-buttons { display: flex; gap: 12px; flex-wrap: wrap; }
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 12px 22px;
+  border-radius: 999px;
+  font-size: .82rem; font-weight: 600;
+  letter-spacing: .06em; text-transform: uppercase;
+  border: 1.5px solid var(--blush);
+  color: var(--blush);
+  transition: background .18s, color .18s;
+}
+.cta-btn:hover { background: var(--blush); color: var(--white); }
+.cta-btn.filled {
+  background: var(--blush); color: var(--white);
+  border-color: var(--blush);
+}
+.cta-btn.filled:hover { background: var(--sage); border-color: var(--sage); }
+
+@media (max-width: 640px) {
+  .platform-row { flex-direction: column; }
+  .reviews-grid { grid-template-columns: 1fr; }
+  .cta-inner { flex-direction: column; align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-logo">Magnolia <span>Dachshund Co.</span></a>
+    <div class="nav-links">
+      <a href="index.html">About</a>
+      <a href="dogs.html">Our Dogs</a>
+      <a href="happy-homes.html">Happy Homes</a>
+      <a href="reviews.html" class="active">Reviews</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ======== HERO ======== -->
+<section class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow">What Families Say</div>
+    <h1>Real dogs. Real families. <em>Real reviews.</em></h1>
+    <p>These are the words of people who brought one of Tori's dogs home. Every review is genuine — we've curated a few favorites here, and linked to the full listings so you can read them all.</p>
+  </div>
+</section>
+
+<!-- ======== PLATFORM RATINGS ======== -->
+<section class="platform-strip">
+  <div class="wrap">
+    <div class="platform-row">
+
+      <!-- Google — update href and rating when live -->
+      <a href="#" target="_blank" rel="noopener" class="platform-badge">
+        <span class="platform-icon">🔍</span>
+        <div class="platform-info">
+          <div class="platform-name">Google</div>
+          <div class="platform-rating">5.0 ★</div>
+          <div class="platform-stars">★★★★★</div>
+          <div class="platform-count">Update with review count · View on Google</div>
+        </div>
+        <span class="platform-arrow">→</span>
+      </a>
+
+      <!-- Yelp — update href and rating when live -->
+      <a href="#" target="_blank" rel="noopener" class="platform-badge">
+        <span class="platform-icon">⭐</span>
+        <div class="platform-info">
+          <div class="platform-name">Yelp</div>
+          <div class="platform-rating">5.0 ★</div>
+          <div class="platform-stars">★★★★★</div>
+          <div class="platform-count">Update with review count · View on Yelp</div>
+        </div>
+        <span class="platform-arrow">→</span>
+      </a>
+
+      <!-- Facebook — update href when live -->
+      <a href="#" target="_blank" rel="noopener" class="platform-badge">
+        <span class="platform-icon">📘</span>
+        <div class="platform-info">
+          <div class="platform-name">Facebook</div>
+          <div class="platform-rating">5.0 ★</div>
+          <div class="platform-stars">★★★★★</div>
+          <div class="platform-count">Update with review count · View on Facebook</div>
+        </div>
+        <span class="platform-arrow">→</span>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+<!-- ======== CURATED REVIEWS ======== -->
+<main>
+  <div class="wrap">
+    <div class="eyebrow" style="margin-bottom:24px;">Favorites from our families</div>
+    <div class="reviews-grid">
+
+      <article class="review-card">
+        <div class="card-stars">★★★★★</div>
+        <p class="card-quote">"Tori was so easy to work with. Our girl came home healthy, happy, and already full of personality. She answered every question I had — even the silly ones — and never made me feel rushed. Best decision we ever made."</p>
+        <div class="card-footer">
+          <div>
+            <div class="card-author">Sarah M.</div>
+            <div class="card-location">Oxford, MS</div>
+          </div>
+          <span class="card-source google">Google</span>
+        </div>
+      </article>
+
+      <article class="review-card">
+        <div class="card-stars">★★★★★</div>
+        <p class="card-quote">"You can tell these dogs are raised with real care — not just bred and shipped out. Tori was honest about everything, the process was smooth, and our little guy has been a perfect addition to our family."</p>
+        <div class="card-footer">
+          <div>
+            <div class="card-author">James & Kelly T.</div>
+            <div class="card-location">Memphis, TN</div>
+          </div>
+          <span class="card-source google">Google</span>
+        </div>
+      </article>
+
+      <article class="review-card">
+        <div class="card-stars">★★★★★</div>
+        <p class="card-quote">"Our dachshund is the heart of our home now. Tori clearly loves what she does — and it shows in every dog she raises. He came to us already socialized and sweet as can be."</p>
+        <div class="card-footer">
+          <div>
+            <div class="card-author">Dana R.</div>
+            <div class="card-location">Tupelo, MS</div>
+          </div>
+          <span class="card-source yelp">Yelp</span>
+        </div>
+      </article>
+
+      <article class="review-card">
+        <div class="card-stars">★★★★★</div>
+        <p class="card-quote">"I drove three hours and every mile was worth it. The farm is exactly what she says it is — a real home, not a kennel. You leave with a dog that's been handled with love since day one."</p>
+        <div class="card-footer">
+          <div>
+            <div class="card-author">Marcus & Denise W.</div>
+            <div class="card-location">Nashville, TN</div>
+          </div>
+          <span class="card-source fb">Facebook</span>
+        </div>
+      </article>
+
+      <article class="review-card">
+        <div class="card-stars">★★★★★</div>
+        <p class="card-quote">"Healthy, well-adjusted, and vet-approved on the first visit. That's really all you can ask for. Tori runs a tight operation — you can tell she takes it seriously."</p>
+        <div class="card-footer">
+          <div>
+            <div class="card-author">Priya K.</div>
+            <div class="card-location">Starkville, MS</div>
+          </div>
+          <span class="card-source google">Google</span>
+        </div>
+      </article>
+
+      <article class="review-card">
+        <div class="card-stars">★★★★★</div>
+        <p class="card-quote">"We were nervous first-time dog owners. Tori walked us through everything — what to expect, what to buy, what to watch for. Three months in and we can't imagine life without her."</p>
+        <div class="card-footer">
+          <div>
+            <div class="card-author">The Henderson Family</div>
+            <div class="card-location">Corinth, MS</div>
+          </div>
+          <span class="card-source yelp">Yelp</span>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</main>
+
+<!-- ======== CTA ======== -->
+<section class="cta-strip">
+  <div class="wrap cta-inner">
+    <div class="cta-text">
+      <h3>Ready to bring one home?</h3>
+      <p>See who's available now — the roster updates in real time.</p>
+    </div>
+    <div class="cta-buttons">
+      <a href="dogs.html" class="cta-btn filled">See Available Dogs</a>
+      <a href="index.html#contact" class="cta-btn">Get in Touch</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Magnolia Dachshund Co. · Tori Sowell · Mississippi</p>
+    <p style="margin-top:6px;">Website by <a href="https://finleyfleet.github.io" target="_blank">Finley Fleet</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
