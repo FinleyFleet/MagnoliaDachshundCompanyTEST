@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Homes — Magnolia Dachshund Co.</title>
+<link rel="stylesheet" href="style.css">
+<style>
+
+/* ---- Page hero ---- */
+.page-hero {
+  padding: 60px 0 50px;
+  border-bottom: 1px solid var(--line);
+  background:
+    radial-gradient(ellipse at 88% 0%,  rgba(196,150,58,.13),  transparent 48%),
+    radial-gradient(ellipse at 4% 100%, rgba(212,147,122,.12), transparent 48%);
+}
+.page-hero h1 {
+  font-family: var(--display);
+  font-size: clamp(2rem, 4.5vw, 3.2rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+.page-hero h1 em { font-style: italic; color: var(--gold); }
+.page-hero p {
+  margin-top: 12px;
+  color: var(--ink-soft);
+  font-weight: 300;
+  font-size: 1rem;
+  max-width: 52ch;
+  line-height: 1.7;
+}
+
+/* Counter strip */
+.counter-strip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: .8rem; color: var(--ink-soft);
+}
+.counter-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--gold); flex: none;
+}
+.counter-strip.live .counter-dot { background: var(--sage); }
+
+/* ---- Masonry-style grid ---- */
+main { padding: 48px 0 80px; }
+.grid-label {
+  font-size: .72rem; font-weight: 600; letter-spacing: .18em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 24px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 22px;
+}
+
+/* ---- Adoption card ---- */
+.card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(44,30,20,.05);
+  transition: transform .18s ease, box-shadow .18s ease;
+  position: relative;
+}
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(44,30,20,.10);
+}
+
+/* Photo */
+.photo {
+  height: 200px;
+  background: linear-gradient(145deg, var(--blush-light), var(--bloom));
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.photo img { width: 100%; height: 100%; object-fit: cover; }
+.photo .fallback {
+  font-family: var(--display);
+  font-size: 3rem; font-weight: 600;
+  font-style: italic; color: var(--blush);
+  opacity: .45;
+}
+
+/* Signature element: gold ribbon banner across the photo bottom */
+.ribbon {
+  background: linear-gradient(90deg, var(--gold), #D4A84B);
+  color: var(--white);
+  font-size: .68rem; font-weight: 700; letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  text-align: center;
+}
+
+.card-body { padding: 18px 18px 20px; }
+.dog-name {
+  font-family: var(--display);
+  font-size: 1.2rem; font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.dog-meta {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  margin-top: 8px;
+}
+.meta-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--bloom);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: .72rem; font-weight: 500;
+  color: var(--ink-soft);
+  padding: 4px 10px;
+}
+
+/* ---- Empty state ---- */
+.notice {
+  grid-column: 1 / -1;
+  padding: 72px 20px; text-align: center;
+  color: var(--ink-soft); font-style: italic;
+  border: 1.5px dashed var(--line); border-radius: var(--radius);
+}
+
+/* ---- Airtable setup hint (shown only when table missing) ---- */
+.setup-hint {
+  margin-top: 40px;
+  padding: 24px 28px;
+  background: var(--bloom);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-size: .88rem; color: var(--ink-soft); line-height: 1.7;
+}
+.setup-hint strong { color: var(--ink); }
+.setup-hint code {
+  background: var(--line); padding: 1px 6px;
+  border-radius: 4px; font-size: .82rem;
+  color: var(--ink);
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+}
+@media (max-width: 400px) {
+  .grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap nav-inner">
+    <a href="index.html" class="nav-logo">Magnolia <span>Dachshund Co.</span></a>
+    <div class="nav-links">
+      <a href="index.html">About</a>
+      <a href="dogs.html">Our Dogs</a>
+      <a href="happy-homes.html" class="active">Happy Homes</a>
+    </div>
+  </div>
+</nav>
+
+<section class="page-hero">
+  <div class="wrap">
+    <div class="eyebrow">Alumni</div>
+    <h1>Every dog found their <em>perfect family.</em></h1>
+    <p>Once they leave the farm they take a little piece of it with them. This is where they end up — in good hands, in good homes, living their best long-haired lives.</p>
+  </div>
+</section>
+
+<div class="wrap">
+  <div id="counterStrip" class="counter-strip">
+    <span class="counter-dot"></span>
+    <span id="counterText">Loading…</span>
+  </div>
+</div>
+
+<main>
+  <div class="wrap">
+    <div class="grid-label">Adopted Dogs</div>
+    <div id="grid" class="grid" aria-live="polite"></div>
+    <div id="setupHint" class="setup-hint" style="display:none">
+      <strong>Airtable setup needed:</strong> Create a second table in your
+      <em>PuppyRosterTest</em> base named <code>Adopted</code> with these fields:<br><br>
+      <code>Name</code> (Single line text) &nbsp;·&nbsp;
+      <code>Photo</code> (Attachment) &nbsp;·&nbsp;
+      <code>AdoptionDate</code> (Date) &nbsp;·&nbsp;
+      <code>Location</code> (Single line text)<br><br>
+      Once you add the first record the page will populate automatically.
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Magnolia Dachshund Co. · Tori Sowell · Mississippi</p>
+    <p style="margin-top:6px;">Website by <a href="https://finleyfleet.github.io" target="_blank">Finley Fleet</a></p>
+  </div>
+</footer>
+
+<script>
+/* =====================================================================
+   CONFIG — same token and base as dogs.html, different table
+===================================================================== */
+const AIRTABLE_TOKEN = "patquPkYnuoYSqTiT.0a40386595cc413f1c8b1b6eafc2363f1695ca2e8a225fcb39c5ae5140cecb9c";
+const BASE_ID        = "appZFNZqGehGaktKP";
+const TABLE_NAME     = "Adopted";      // ← create this table in your base
+const VIEW_NAME      = "Grid view";
+
+/* ---------- security helpers ---------- */
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c])
+  );
+}
+function safeURL(u){
+  return /^https?:\/\//i.test(String(u)) ? u : "";
+}
+
+/* ---------- format date nicely ---------- */
+function fmtDate(raw){
+  if (!raw) return null;
+  const d = new Date(raw + "T12:00:00"); // noon avoids timezone flips
+  return d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
+}
+
+/* ---------- Airtable fetch ---------- */
+async function fetchAdopted(){
+  let records = [], offset = null;
+  do {
+    const params = new URLSearchParams({ view: VIEW_NAME });
+    if (offset) params.set("offset", offset);
+    const url = `https://api.airtable.com/v0/${BASE_ID}/${encodeURIComponent(TABLE_NAME)}?${params}`;
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${AIRTABLE_TOKEN}` }
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    records = records.concat(data.records);
+    offset = data.offset || null;
+  } while (offset);
+
+  return records.map(r => {
+    const f = r.fields || {};
+    const att = Array.isArray(f.Photo) && f.Photo.length ? f.Photo[0] : null;
+    return {
+      Name:         f.Name         || "",
+      Photo:        att ? (att.thumbnails?.large?.url || att.url) : "",
+      AdoptionDate: f.AdoptionDate || "",
+      Location:     f.Location     || ""
+    };
+  }).filter(d => d.Name);
+}
+
+/* ---------- render ---------- */
+function render(dogs, isLive, tableError){
+  const grid    = document.getElementById("grid");
+  const strip   = document.getElementById("counterStrip");
+  const text    = document.getElementById("counterText");
+  const hint    = document.getElementById("setupHint");
+  grid.innerHTML = "";
+
+  if (tableError){
+    hint.style.display = "block";
+    text.textContent = "Adopted table not found — see setup instructions below.";
+    return;
+  }
+
+  hint.style.display = "none";
+
+  if (!dogs.length){
+    grid.innerHTML = `<div class="notice">No adopted dogs recorded yet — check back soon!</div>`;
+    text.textContent = "No records yet.";
+    return;
+  }
+
+  for (const d of dogs){
+    const photo   = safeURL(d.Photo);
+    const initial = esc((d.Name || "?")[0]);
+    const date    = fmtDate(d.AdoptionDate);
+
+    const card = document.createElement("article");
+    card.className = "card";
+    card.innerHTML = `
+      <div class="photo">
+        ${photo
+          ? `<img src="${esc(photo)}" alt="${esc(d.Name)}">`
+          : `<div class="fallback">${initial}</div>`}
+      </div>
+      ${date ? `<div class="ribbon">Adopted ${esc(date)}</div>` : `<div class="ribbon">Adopted</div>`}
+      <div class="card-body">
+        <div class="dog-name">${esc(d.Name)}</div>
+        <div class="dog-meta">
+          ${d.Location ? `<span class="meta-pill">📍 ${esc(d.Location)}</span>` : ""}
+        </div>
+      </div>`;
+
+    const img = card.querySelector("img");
+    if (img) img.addEventListener("error", () => {
+      img.closest(".photo").innerHTML = `<div class="fallback">${initial}</div>`;
+    });
+
+    grid.appendChild(card);
+  }
+
+  if (isLive){
+    strip.classList.add("live");
+    text.textContent = `${dogs.length} dog${dogs.length === 1 ? "" : "s"} in happy homes — updated ${new Date().toLocaleDateString()}.`;
+  }
+}
+
+/* ---------- load ---------- */
+async function load(){
+  const text = document.getElementById("counterText");
+  try {
+    const dogs = await fetchAdopted();
+    render(dogs, true, false);
+  } catch(err){
+    console.error("Airtable load failed:", err);
+    const tableNotFound = err.message.includes("404") || err.message.includes("NOT_FOUND");
+    render([], false, tableNotFound);
+    if (!tableNotFound){
+      text.textContent = `Connection error: ${err.message}`;
+    }
+  }
+}
+
+load();
+</script>
+</body>
+</html>

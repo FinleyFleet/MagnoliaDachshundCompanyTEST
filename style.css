@@ -105,6 +105,6 @@ footer a { color: var(--blush); }
   * { transition: none !important; animation: none !important; }
 }
 @media (max-width: 600px) {
-  .nav-links { gap: 18px; }
-  .nav-links a { font-size: .78rem; }
+  .nav-links { gap: 14px; }
+  .nav-links a { font-size: .75rem; letter-spacing: .05em; }
 }
