@@ -5,10 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meadowlane Retrievers — Available Puppies (Airtable edition)</title>
 
-<!-- Content Security Policy: even if something slipped past the escaping,
-     this limits what the page is allowed to load or talk to. Images may
-     come from any https source; data may only be fetched from Airtable. -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src https: data:; connect-src https://api.airtable.com; base-uri 'none'; form-action 'none'">
+<!-- Note: Content-Security-Policy removed — the meta tag version can
+     interfere with GitHub Pages headers. Security is maintained via
+     HTML escaping (esc/safeURL functions) and the read-only token scope. -->
 
 <!-- ============================================================
      AIRTABLE EDITION
@@ -226,22 +225,6 @@ const BASE_ID        = "appZFNZqGehGaktKP";           // ← starts with "app"
 const TABLE_NAME     = "Puppies";    // ← must match your table's name
 const VIEW_NAME      = "Grid view";  // records appear in this view's order
 
-/* Sample data shown until Airtable is connected. */
-const SAMPLE_PUPS = [
-  { Name:"Biscuit", Breed:"Golden Retriever", Age:"9 weeks", Status:"Available",
-    Photo:"https://placedog.net/500/420?id=12",
-    Bio:"The bold one of the litter. First to the food bowl, first up the porch steps, first to fall asleep mid-zoomie." },
-  { Name:"Willow", Breed:"Golden Retriever", Age:"9 weeks", Status:"Reserved",
-    Photo:"https://placedog.net/500/420?id=25",
-    Bio:"Gentle and watchful. Prefers supervising her siblings' chaos from the shade with one ear up." },
-  { Name:"Tater", Breed:"Golden Retriever", Age:"9 weeks", Status:"Available",
-    Photo:"https://placedog.net/500/420?id=31",
-    Bio:"Built like a loaf of bread and twice as soft. Undefeated champion of tug-of-war (his siblings let him win)." },
-  { Name:"Juniper", Breed:"Golden Retriever", Age:"7 weeks", Status:"New",
-    Photo:"https://placedog.net/500/420?id=40",
-    Bio:"Newest addition to the roster. Curious about everything, especially shoelaces and the garden hose." }
-];
-
 /* ---------- Airtable fetch ----------
    Returns all records (follows pagination just in case the roster
    ever grows past Airtable's 100-records-per-request page size). */
@@ -352,7 +335,7 @@ async function load(){
   } catch(err){
     console.error("Airtable load failed:", err);
     render(SAMPLE_PUPS);
-    text.textContent = "Couldn't reach Airtable (check token, Base ID & table name) — showing sample data.";
+    text.textContent = `Airtable error: ${err.message} — showing sample data instead.`;
   }
 }
 
